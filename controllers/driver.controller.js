@@ -1,7 +1,32 @@
 const db = require("../config/connection.config");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const multer = require("multer");
 const Driver = db.driver;
+
+const FILE_TYPE_MAP = {
+  "image/png": "png",
+  "image/jpg": "jpg",
+  "image/jpeg": "jpeg",
+};
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const isValid = FILE_TYPE_MAP[file.mimetype];
+    let uploadError = new Error("Invalid image format");
+    if (isValid) {
+      uploadError = null;
+    }
+    cb(uploadError, "public/uploads");
+  },
+  filename: function (req, file, cb) {
+    const fileName = file.originalname.split(" ").join("-");
+    const extension = FILE_TYPE_MAP[file.mimetype];
+    cb(null, `${fileName}-${Date.now()}.${extension}`);
+  },
+});
+
+const uploadProfile = multer({ storage: storage });
 
 exports.registration = (req, res) => {
   Driver.create({
@@ -120,4 +145,23 @@ exports.editDriver = (req, body) => {
     .catch((err) => {
       res.status(500).json({ Error: err });
     });
+};
+
+exports.setProfilePic = (req, res) => {
+  const file = req.file;
+  if (file) {
+    return res.status(400).json({ message: "Image is required" });
+  }
+  const fileName = req.file.filename;
+  const basePath = `${req.protocal}://${req.get("host")}/public/uploads/`;
+  Driver.update(
+    {
+      profilePic: `${basePath}${fileName}`,
+    },
+    {
+      where: {
+        id: req.params.id,
+      },
+    }
+  );
 };
