@@ -10,51 +10,51 @@ module.exports = (sequelize, Sequelize) => {
       fname: {
         type: Sequelize.STRING,
         required: true,
-        allowNull: false
+        allowNull: false,
       },
       lname: {
         type: Sequelize.STRING,
         required: true,
-        allowNull: false
+        allowNull: false,
       },
       email: {
         type: Sequelize.STRING,
         required: true,
         IsEmail: true,
-        allowNull: false
+        allowNull: false,
       },
       phoneNo: {
         type: Sequelize.INTEGER,
         required: true,
-        allowNull: false
+        allowNull: false,
       },
       gender: {
         type: Sequelize.STRING,
         required: true,
-        allowNull: false
+        allowNull: false,
       },
       password: {
         type: Sequelize.STRING,
         required: true,
-        allowNull: false
+        allowNull: false,
       },
       profilePic: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
       },
       address: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         required: true,
-        allowNull: false
+        allowNull: false,
       },
       licenseNo: {
         type: Sequelize.STRING,
         required: true,
-        allowNull: false
+        allowNull: false,
       },
       experience: {
         type: Sequelize.STRING,
         required: true,
-        // allowNull: false
+        allowNull: false,
       },
     },
     { timestamps: false }
