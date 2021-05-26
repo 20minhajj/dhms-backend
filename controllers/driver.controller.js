@@ -112,7 +112,7 @@ exports.oneDriver = (req, res) => {
 
 exports.deleteDriver = (req, res) => {
   const id = req.params.driverID;
-  Driver.destrroy({
+  Driver.destroy({
     where: { id: id },
   })
     .then((driver) => {
