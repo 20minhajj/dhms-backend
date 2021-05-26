@@ -1,5 +1,6 @@
 const express = require("express");
 const multer = require("multer");
+const verfy = require("../validation/emailValidation");
 
 const router = express.Router();
 
@@ -19,8 +20,16 @@ const storage = multer.diskStorage({
 
 const uploadProfile = multer({ storage: storage });
 
-router.post("/driver/auth/signup", registrationCtrl.registration);
+router.post(
+  "/driver/auth/signup",
+  [verfy.checkDuplicateDriverEmail],
+  registrationCtrl.registration
+);
 router.post("/driver/auth/signin", loginCtrl.signin);
-router.put("/driver/setProfile/:id", uploadProfile.single('image'), profilePicCtrl.setProfilePic);
+router.put(
+  "/driver/setProfile/:id",
+  uploadProfile.single("image"),
+  profilePicCtrl.setProfilePic
+);
 
 module.exports = router;
