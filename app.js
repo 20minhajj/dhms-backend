@@ -13,9 +13,10 @@ app.use(authJwt());
 app.use(errorHandler);
 
 const DriverRoutes = require("./router/driver.router");
+const UserRoutes = require("./router/user.router");
 // ROUTES
 app.use("/api", DriverRoutes);
-
+app.use("/api", UserRoutes);
 db.sequelize.sync({ force: true }).then(() => {
   console.log("Drop and Resync");
 });
