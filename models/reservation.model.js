@@ -10,12 +10,6 @@ module.exports = (sequelize, Sequelize) => {
         defaultValue: Sequelize.UUIDV1,
         primaryKey: true,
       },
-      user: {
-        type: Sequelize.UUID,
-      },
-      driver: {
-        type: Sequelize.UUID,
-      },
       date: {
         type: Sequelize.STRING,
         required: true,

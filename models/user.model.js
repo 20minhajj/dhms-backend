@@ -35,14 +35,6 @@ module.exports = (sequelize, Sequelize) => {
       profilePic: {
         type: Sequelize.STRING,
       },
-      carModel: {
-        type: Sequelize.STRING,
-        required: true,
-      },
-      regNo: {
-        type: Sequelize.STRING,
-        required: true,
-      },
       password: {
         type: Sequelize.STRING,
         required: true,

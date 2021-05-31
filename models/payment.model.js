@@ -8,13 +8,9 @@ module.exports = (sequelize, Sequelize) => {
         defaultValue: Sequelize.UUIDV1,
         primaryKey: true,
       },
-      reservation: {
-        type: Sequelize.UUID,
-      },
       amount: {
         type: Sequelize.STRING,
         required: true,
-        len: [0, 3],
       },
       date: {
         type: Sequelize.STRING,
