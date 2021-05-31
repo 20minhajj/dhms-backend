@@ -9,7 +9,7 @@ checkDuplicateDriverEmail = (req, res, next) => {
     },
   }).then((driver) => {
     if (driver) {
-      res.status(400).json({ message: "Image already taken" });
+      res.status(400).json({ message: "Email already taken" });
     }
     next();
   });
@@ -22,7 +22,7 @@ checkDuplicateUserEmail = (req, res, next) => {
     },
   }).then((user) => {
     if (user) {
-      res.status(400).json({ message: "Image already taken" });
+      res.status(400).json({ message: "Email already taken" });
     }
     next();
   });
