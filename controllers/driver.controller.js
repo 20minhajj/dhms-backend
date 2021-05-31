@@ -2,8 +2,11 @@ const db = require("../config/connection.config");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
+const { role } = require("../config/connection.config");
 const Driver = db.driver;
+const Role = db.roles
 
+const Op = db.Sequelize.Op;
 const FILE_TYPE_MAP = {
   "image/png": "png",
   "image/jpg": "jpg",
@@ -38,10 +41,26 @@ exports.registration = (req, res) => {
     address: req.body.address,
     licenseNo: req.body.licenseNo,
     experience: req.body.experience,
+    roles: req.body.roles,
     password: bcrypt.hashSync(req.body.password, 8),
   })
     .then((driver) => {
-      res.status(200).send(driver);
+      role
+        .findAll({
+          where: {
+            name: {
+              [Op.or]: req.body.roles,
+            },
+          },
+        })
+        .then((roles) => {
+          user.setRoles(roles).then(() => {
+            res.send("User registered successfully!");
+          });
+        })
+        .catch((err) => {
+          res.status(500).send("Error -> " + err);
+        });
     })
     .catch((err) => {
       res.status(400).json({ error: err });
@@ -126,7 +145,7 @@ exports.deleteDriver = (req, res) => {
     });
 };
 
-exports.editDriver = (req, body) => {
+exports.editDriver = (req, res) => {
   const id = req.params.driverID;
   Driver.update(
     {
