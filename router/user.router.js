@@ -22,7 +22,6 @@ const uploadProfile = multer({ storage: storage });
 
 router.post(
   "/user/auth/signup",
-  [verfy.checkDuplicateUserEmail],
   registrationCtrl.registration
 );
 router.post("/user/auth/signin", loginCtrl.signin);
