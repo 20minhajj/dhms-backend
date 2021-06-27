@@ -11,7 +11,7 @@ const app = express();
 const cors = require("cors");
 const authJwt = require("./helpers/jwt");
 const errorHandler = require("./helpers/errorHandler");
-require("./helpers/passport")(app);
+// require("./helpers/passport")(app);
 const Role = db.role;
 
 /* Set Security Configs */
