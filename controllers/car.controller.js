@@ -1,11 +1,15 @@
 const db = require("../config/connection.config");
+const jwt = require("jsonwebtoken");
 
 const Car = db.car;
 
 exports.addCar = (req, res) => {
+  const cookie = req.cookies["jwt"];
+  const claims = jwt.verify(cookie, process.env.SECRETE);
   Car.create({
     carModel: req.body.carModel,
     regNo: req.body.regNo,
+    userID: claims.userID,
   })
     .then((car) => {
       res.status(200).send(car);
@@ -20,7 +24,7 @@ exports.listCars = (req, res) => {
     .then((car) => {
       if (!car) {
         res.status(401).json({ message: "No cars to display" });
-      }git 
+      }
       res.status(201).send(car);
     })
     .catch((err) => {
@@ -31,7 +35,7 @@ exports.listCars = (req, res) => {
 exports.deleteCar = (req, res) => {
   const id = req.params.carID;
   Car.destroy({
-    where: { id: id },
+    where: { carID: id },
   })
     .then((car) => {
       if (!car) {
@@ -52,7 +56,7 @@ exports.editCar = (req, res) => {
       regNo: req.body.regNo,
     },
     {
-      where: { id: id },
+      where: { carID: id },
     }
   )
     .then((car) => {

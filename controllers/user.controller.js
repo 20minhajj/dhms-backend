@@ -2,7 +2,10 @@ const db = require("../config/connection.config");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
+const Role = db.role;
 const User = db.user;
+
+const Op = db.Sequelize.Op;
 
 const FILE_TYPE_MAP = {
   "image/png": "png",
@@ -41,10 +44,24 @@ exports.registration = (req, res) => {
     password: bcrypt.hashSync(req.body.password, 8),
   })
     .then((user) => {
-      res.status(200).send(user);
+      Role.findAll({
+        where: {
+          name: {
+            [Op.or]: req.body.roles,
+          },
+        },
+      })
+        .then((roles) => {
+          user.setRoles(roles).then(() => {
+            res.send("User registered successfully!");
+          });
+        })
+        .catch((err) => {
+          res.status(500).send("Error -> " + err);
+        });
     })
     .catch((err) => {
-      res.status(400).json({ error: err });
+      res.status(500).send("Fail! Error -> " + err);
     });
 };
 
@@ -69,7 +86,7 @@ exports.signin = (req, res) => {
       }
       const token = jwt.sign(
         {
-          userID: driver.driverID,
+          userID: user.userID,
           //   isadmin : driver.isadmin
         },
         process.env.SECRETE,
@@ -77,7 +94,11 @@ exports.signin = (req, res) => {
           expiresIn: "1d",
         }
       );
-      res.status(200).send({ auth: true, authToken: token });
+      res.cookie("jwt", token, {
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+      });
+      res.status(200).send({ auth: true, jwt: token });
     })
     .catch((err) => {
       res.status(500).send("Error" + err);
@@ -164,4 +185,29 @@ exports.setProfilePic = (req, res) => {
       },
     }
   );
+};
+
+exports.profile = (req, res) => {
+  const cookie = req.cookies["jwt"];
+  const claims = jwt.verify(cookie, process.env.SECRETE);
+  if (!claims) {
+    return res.status(400).send({ message: "unAuthenticated" });
+  }
+  // res.send(claims)
+  User.findOne({
+    where: { userID: claims.userID },
+  })
+    .then((profile) => {
+      res.status(200).send(profile);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+};
+
+exports.logout = (req, res) => {
+  res.cookie("jwt", "", {
+    maxAge: 0,
+  });
+  res.status(200).json({ message: "Goodbye fella" });
 };

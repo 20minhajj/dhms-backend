@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const { role } = require("../config/connection.config");
 const Driver = db.driver;
-const Role = db.roles
+const Role = db.roles;
 
 const Op = db.Sequelize.Op;
 const FILE_TYPE_MAP = {
@@ -31,6 +31,10 @@ const storage = multer.diskStorage({
 
 const uploadProfile = multer({ storage: storage });
 
+const capitalLetter = (a) => {
+  return a[0].toUpperCase();
+};
+
 exports.registration = (req, res) => {
   Driver.create({
     fname: req.body.fname,
@@ -44,15 +48,14 @@ exports.registration = (req, res) => {
     roles: req.body.roles,
     password: bcrypt.hashSync(req.body.password, 8),
   })
-    .then((driver) => {
-      role
-        .findAll({
-          where: {
-            name: {
-              [Op.or]: req.body.roles,
-            },
+    .then((user) => {
+      Role.findAll({
+        where: {
+          name: {
+            [Op.or]: req.body.roles,
           },
-        })
+        },
+      })
         .then((roles) => {
           user.setRoles(roles).then(() => {
             res.send("User registered successfully!");
@@ -63,7 +66,7 @@ exports.registration = (req, res) => {
         });
     })
     .catch((err) => {
-      res.status(400).json({ error: err });
+      res.status(500).send("Fail! Error -> " + err);
     });
 };
 
@@ -81,6 +84,7 @@ exports.signin = (req, res) => {
         req.body.password,
         driver.password
       );
+
       if (!validPassword) {
         return res
           .status(401)
@@ -96,6 +100,10 @@ exports.signin = (req, res) => {
           expiresIn: "1d",
         }
       );
+      res.cookie("jwt", token, {
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+      });
       res.status(200).send({ auth: true, authToken: token });
     })
     .catch((err) => {
@@ -183,4 +191,22 @@ exports.setProfilePic = (req, res) => {
       },
     }
   );
+};
+
+exports.profile = (req, res) => {
+  const cookie = req.cookies["jwt"];
+  const claims = jwt.verify(cookie, process.env.SECRETE);
+  if (!claims) {
+    return res.status(400).send({ message: "unAuthenticated" });
+  }
+  // res.send(claims)
+  Driver.findOne({
+    where: { driverID: claims.driverID },
+  })
+    .then((profile) => {
+      res.status(200).send(profile);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
 };
