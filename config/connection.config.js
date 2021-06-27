@@ -27,22 +27,23 @@ db.payment = require("../models/payment.model")(sequelize, Sequelize);
 db.reservation = require("../models/reservation.model")(sequelize, Sequelize);
 db.role = require("../models/role.model")(sequelize, Sequelize);
 db.car = require("../models/car.model")(sequelize, Sequelize);
+db.offers = require('../models/offer.model')(sequelize, Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
   foreignKey: "roleID",
   otherKey: "userID",
-}); 
+});
 db.user.belongsToMany(db.role, {
   through: "user_roles",
   foreignKey: "userID",
   otherKey: "roleID",
 });
 // user to reservation
-db.user.hasOne(db.reservation, { foreignKey: "userID", sourceKey: "userID" });
-db.reservation.belongsTo(db.user, {
-  foreignKey: "userID",
-  targetKey: "userID",
+db.offers.hasOne(db.reservation, { foreignKey: "offersID", sourceKey: "offersID" });
+db.reservation.belongsTo(db.offers, {
+  foreignKey: "offersID",
+  targetKey: "offersID",
 });
 // driver to reservation
 db.driver.hasOne(db.reservation, {
@@ -64,8 +65,49 @@ db.payment.belongsTo(db.reservation, {
   targetKey: "reservID",
 });
 
-// driver to car
-db.driver.hasMany(db.car, { foreignKey: "driverID", sourceKey: "driverID" });
-db.car.belongsTo(db.driver, { foreignKey: "driverID", targetKey: "driverID" });
+// User to car
+db.user.hasMany(db.car, {
+  foreignKey: "userID",
+  sourceKey: "userID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+  hooks: true
+});
+db.car.belongsTo(db.user, {
+  foreignKey: "userID",
+  targetKey: "userID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
+// user to offer
+db.user.hasMany(db.offers, {
+  foreignKey: "userID",
+  sourceKey: "userID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+  hooks: true
+});
+db.offers.belongsTo(db.user, {
+  foreignKey: "userID",
+  targetKey: "userID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
+// car to offer
+db.car.hasMany(db.offers, {
+  foreignKey: "carID",
+  sourceKey: "carID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+  hooks: true
+});
+db.offers.belongsTo(db.car, {
+  foreignKey: "carID",
+  targetKey: "carID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 
 module.exports = db;
