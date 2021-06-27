@@ -22,7 +22,7 @@ checkDuplicateUserEmail = (req, res, next) => {
     },
   }).then((user) => {
     if (user) {
-      res.status(400).json({ message: "Email already taken" });
+      res.status(400).send("email on use");
     }
     next();
   });
@@ -30,6 +30,6 @@ checkDuplicateUserEmail = (req, res, next) => {
 
 const verfy = {};
 verfy.checkDuplicateDriverEmail = checkDuplicateDriverEmail;
-verfy.checkDuplicateUserEmail = this.checkDuplicateUserEmail;
+verfy.checkDuplicateUserEmail = checkDuplicateUserEmail;
 
 module.exports = verfy;
