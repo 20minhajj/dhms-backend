@@ -1,34 +1,24 @@
 const express = require("express");
 const multer = require("multer");
 const verfy = require("../validation/emailValidation");
+const roleVerify = require("../validation/rolesValidation");
+const passVfy = require('../validation/passwordVliadation')
 
 const router = express.Router();
 
-const registrationCtrl = require("../controllers/user.controller");
-const loginCtrl = require("../controllers/user.controller");
-const profilePicCtrl = require("../controllers/user.controller");
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/uploads");
-  },
-  filename: function (req, file, cb) {
-    const fileName = file.originalname.split(" ").join("-");
-    cb(null, fileName + "-" + Date.now());
-  },
-});
-
-const uploadProfile = multer({ storage: storage });
+const userCTRL = require("../controllers/user.controller");
 
 router.post(
   "/user/auth/signup",
-  registrationCtrl.registration
+  [verfy.checkDuplicateUserEmail,passVfy.passValidation, roleVerify.checkRolesExisted],
+  userCTRL.registration
 );
-router.post("/user/auth/signin", loginCtrl.signin);
-router.put(
-  "/user/setProfile/:id",
-  uploadProfile.single("image"),
-  profilePicCtrl.setProfilePic
-);
-
+router.post("/user/auth/signin", userCTRL.signin);
+router.put("/user/setProfile/:id", userCTRL.setProfilePic);
+router.put("/user/editinfo/:id", userCTRL.editUser);
+router.delete("/user/delete/id", userCTRL.deleteUser);
+router.get("/user/oneuser/:id", userCTRL.oneUser);
+router.get("/user/callusers", userCTRL.allUsers);
+router.get("/user/profile", userCTRL.profile);
+router.post("/user/logout", userCTRL.logout);
 module.exports = router;

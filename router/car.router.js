@@ -1,15 +1,10 @@
 const express = require("express");
-
 const router = express.Router();
-
-const addCarCtrl = require("../controllers/car.controller");
-const listCarCrtl = require("../controllers/car.controller");
-const deleteCarCtrl = require("../controllers/car.controller");
-const editCarCtrl = require("../controllers/car.controller");
-
-router.post("/user/car/add", addCarCtrl.addCar);
-router.get("/user/car/list", listCarCrtl.listCars);
-router.delete("/user/car/delete/:id", deleteCarCtrl.deleteCar);
-router.put("/user/car/update/:id", editCarCtrl.editCar);
+const carCrtl = require("../controllers/car.controller");
+const jwtVerify = require("../validation/userJWT");
+router.post("/user/car/add", [jwtVerify.verifyUserJWT], carCrtl.addCar);
+router.get("/user/car/list", carCrtl.listCars);
+router.delete("/user/car/delete/:id", carCrtl.deleteCar);
+router.put("/user/car/update/:id", carCrtl.editCar);
 
 module.exports = router;

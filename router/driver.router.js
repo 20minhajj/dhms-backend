@@ -1,35 +1,20 @@
 const express = require("express");
-const multer = require("multer");
 const verfy = require("../validation/emailValidation");
 
 const router = express.Router();
 
-const registrationCtrl = require("../controllers/driver.controller");
-const loginCtrl = require("../controllers/driver.controller");
-const profilePicCtrl = require("../controllers/driver.controller");
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/uploads");
-  },
-  filename: function (req, file, cb) {
-    const fileName = file.originalname.split(" ").join("-");
-    cb(null, fileName + "-" + Date.now());
-  },
-});
-
-const uploadProfile = multer({ storage: storage });
+const driverCtrl = require("../controllers/driver.controller");
 
 router.post(
   "/driver/auth/signup",
   [verfy.checkDuplicateDriverEmail],
-  registrationCtrl.registration
+  driverCtrl.registration
 );
-router.post("/driver/auth/signin", loginCtrl.signin);
-router.put(
-  "/driver/setProfile/:id",
-  uploadProfile.single("image"),
-  profilePicCtrl.setProfilePic
-);
+router.post("/driver/auth/signin", driverCtrl.signin);
+router.put("/driver/setProfile/:id", driverCtrl.setProfilePic);
+router.get("/driver/call/:id", driverCtrl.oneDriver);
+router.delete("/driver/delete/:id", driverCtrl.deleteDriver);
+router.put("/driver/editinfo/:id", driverCtrl.editDriver);
+router.get('/driver/profile', driverCtrl.profile)
 
 module.exports = router;
