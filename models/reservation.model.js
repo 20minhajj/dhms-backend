@@ -9,15 +9,7 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV1,
         primaryKey: true,
-      },
-      date: {
-        type: Sequelize.STRING,
-        required: true,
-      },
-      time: {
-        type: Sequelize.STRING,
-        required: true,
-      },
+      }
     },
     { timestamps: false }
   );

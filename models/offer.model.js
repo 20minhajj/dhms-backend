@@ -1,48 +1,43 @@
+const Driver = require("./driver.model");
+const User = require("./user.model");
+
 module.exports = (sequelize, Sequelize) => {
-  const User = sequelize.define(
-    "users",
+  const Offers = sequelize.define(
+    "Offers",
     {
-      userID: {
+      offersID: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV1,
         primaryKey: true,
       },
-      fname: {
+      locFrom: {
         type: Sequelize.STRING,
         required: true,
       },
-      lname: {
+      locTo: {
         type: Sequelize.STRING,
         required: true,
       },
-      gender: {
+      date: {
         type: Sequelize.STRING,
         required: true,
       },
-      email: {
-        type: Sequelize.STRING,
-        required: true,
-        IsEmail: true,
-      },
-      phoneNo: {
+      time: {
         type: Sequelize.STRING,
         required: true,
       },
-      address: {
+      price: {
         type: Sequelize.STRING,
         required: true,
       },
-      profilePic: {
-        type: Sequelize.STRING,
-        defaultValue: "download.png"
-      },
-      password: {
-        type: Sequelize.STRING,
+      status: {
+        type: Sequelize.BOOLEAN,
         required: true,
+        defaultValue: true,
       },
     },
     { timestamps: false }
   );
 
-  return User;
+  return Offers;
 };

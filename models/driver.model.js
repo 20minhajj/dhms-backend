@@ -40,6 +40,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       profilePic: {
         type: Sequelize.STRING,
+        defaultValue: "download.png"
       },
       address: {
         type: Sequelize.STRING,
