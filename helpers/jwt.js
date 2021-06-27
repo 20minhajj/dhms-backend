@@ -6,7 +6,7 @@ const authJwt = () => {
     secret,
     algorithms: ["HS256"],
   }).unless({
-    path: ["/api/driver/auth/signup", "/api/driver/auth/signin"],
+    path: ["/api/driver/auth/signup", "/api/driver/auth/signin" , "/api/user/auth/signup", "/api/user/auth/signin"],
   });
 };
 
