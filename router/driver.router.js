@@ -16,5 +16,5 @@ router.get("/driver/call/:id", driverCtrl.oneDriver);
 router.delete("/driver/delete/:id", driverCtrl.deleteDriver);
 router.put("/driver/editinfo/:id", driverCtrl.editDriver);
 router.get('/driver/profile', driverCtrl.profile)
-
+router.get('/driver/all', driverCtrl.allDrivers)
 module.exports = router;

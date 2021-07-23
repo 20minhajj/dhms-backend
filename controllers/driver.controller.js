@@ -45,7 +45,7 @@ exports.registration = (req, res) => {
     address: req.body.address,
     licenseNo: req.body.licenseNo,
     experience: req.body.experience,
-    roles: req.body.roles,
+    status: req.body.status,
     password: bcrypt.hashSync(req.body.password, 8),
   })
     .then((user) => {

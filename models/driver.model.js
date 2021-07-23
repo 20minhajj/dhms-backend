@@ -57,6 +57,10 @@ module.exports = (sequelize, Sequelize) => {
         required: true,
         allowNull: false,
       },
+      status: {
+        type: Sequelize.STRING,
+        required: true,
+      },
     },
     { timestamps: false }
   );

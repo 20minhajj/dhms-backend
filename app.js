@@ -1,24 +1,12 @@
 const express = require("express");
-// const session = require("cookie-session");
 const cookieParser = require("cookie-parser");
-const session = require("express-session");
-const helmet = require("helmet");
-const hpp = require("hpp");
-const csurf = require("csurf");
-const limiter = require("express-rate-limit");
 const db = require("./config/connection.config");
 const app = express();
 const cors = require("cors");
 const authJwt = require("./helpers/jwt");
 const errorHandler = require("./helpers/errorHandler");
-// require("./helpers/passport")(app);
-const Role = db.role;
 
-/* Set Security Configs */
-app.use(helmet());
-app.use(hpp());
-//
-// MIDDLEWARES
+const Role = db.role;
 
 app.use(express.json());
 app.use(cookieParser());
@@ -32,10 +20,6 @@ app.use(
 app.options("*", cors);
 app.use(authJwt());
 app.use(errorHandler);
-
-app.use(csurf());
-
-app.use(limiter);
 
 const DriverRoutes = require("./router/driver.router");
 const UserRoutes = require("./router/user.router");

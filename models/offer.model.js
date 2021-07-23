@@ -31,9 +31,9 @@ module.exports = (sequelize, Sequelize) => {
         required: true,
       },
       status: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.STRING,
         required: true,
-        defaultValue: true,
+        defaultValue: "1",
       },
     },
     { timestamps: false }

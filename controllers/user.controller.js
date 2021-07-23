@@ -41,6 +41,7 @@ exports.registration = (req, res) => {
     address: req.body.address,
     carModel: req.body.carModel,
     reqNo: req.body.reqNo,
+    status: req.body.status,
     password: bcrypt.hashSync(req.body.password, 8),
   })
     .then((user) => {
@@ -81,7 +82,7 @@ exports.signin = (req, res) => {
       );
       if (!validPassword) {
         return res
-          .status(401)
+          .status(200)
           .send({ auth: false, reason: "invalid password" });
       }
       const token = jwt.sign(
@@ -98,7 +99,7 @@ exports.signin = (req, res) => {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
       });
-      res.status(200).send({ auth: true, jwt: token });
+      res.status(200).send({ auth: true, jwt: token, status: user.status });
     })
     .catch((err) => {
       res.status(500).send("Error" + err);
@@ -119,7 +120,9 @@ exports.allUsers = (req, res) => {
 };
 
 exports.oneUser = (req, res) => {
-  User.findOne(req.params.userID)
+  User.findOne({
+    where: { userID: req.params.id },
+  })
     .then((user) => {
       if (!user) {
         res.status(401).json({ message: "No user found" });
@@ -210,4 +213,23 @@ exports.logout = (req, res) => {
     maxAge: 0,
   });
   res.status(200).json({ message: "Goodbye fella" });
+};
+
+exports.changeRole = (req, body) => {
+  const id = req.params.id;
+  User.update(
+    {
+      status: req.body.status,
+    },
+    { where: { userID: id } }
+  )
+    .then((user) => {
+      if (!user) {
+        res.status(401).json({ message: "No user found" });
+      }
+      res.status(201).send(user);
+    })
+    .catch((err) => {
+      res.status(500).json({ Error: err });
+    });
 };
