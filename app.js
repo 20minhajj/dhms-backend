@@ -33,10 +33,11 @@ app.use("/api", CarRoutes);
 app.use("/api", OfferRoutes);
 app.use("/api", ReservationRoutes);
 
-db.sequelize.sync({ force: true }).then(() => {
+db.sequelize.sync().then(() => {
   console.log("Drop and Resync");
-  initial();
+  // initial();
 });
+
 
 const server = app.listen(process.env.PORT, () => {
   const host = server.address().address;
